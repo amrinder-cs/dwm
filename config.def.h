@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#include <X11/XF86keysym.h>
 
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
@@ -16,6 +17,35 @@ static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
 	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+};
+static const char *brupcmd[] = { "brightnessctl", "set", "10%+", NULL }; /* brightness up command */
+static const char *brdowncmd[] = { "brightnessctl", "set", "10%-", NULL }; /* brightness down command */
+
+/* volume up*/
+static const char *upvol[] = {
+    "/usr/bin/pactl",
+    "set-sink-volume",
+    "@DEFAULT_SINK@",
+    "+5%",
+    NULL
+};
+
+/* volume down */
+static const char *downvol[] = {
+    "/usr/bin/pactl",
+    "set-sink-volume",
+    "@DEFAULT_SINK@",
+    "-5%",
+    NULL
+};
+
+/* volume mute */
+static const char *mutevol[] = {
+    "/usr/bin/pactl",
+    "set-sink-mute",
+    "@DEFAULT_SINK@",
+    "toggle",
+    NULL
 };
 
 /* tagging */
@@ -62,6 +92,11 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { "kitty", NULL };
 
 static const Key keys[] = {
+	{ 0, XF86XK_AudioLowerVolume, spawn, {.v = downvol } },
+	{ 0, XF86XK_AudioMute,        spawn, {.v = mutevol } },
+	{ 0, XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } },
+	{ 0, XF86XK_MonBrightnessUp,  spawn,          {.v = brupcmd} },
+	{ 0, XF86XK_MonBrightnessDown, spawn,          {.v = brdowncmd} },
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
